@@ -71,6 +71,18 @@
       margin: 1.5rem;
       width: 95%;
       max-width: 800px;
+      text-align: center;
+    }
+
+    #preview {
+      margin-bottom: 1rem;
+    }
+
+    #preview img {
+      max-width: 100%;
+      max-height: 250px;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
 
     table {
@@ -174,11 +186,16 @@
           return;
         }
 
-        let tableHTML = `<table id="conceptTable">
-          <thead><tr>
-            <th onclick="sortTable(this.closest('table'),0)">Concept</th>
-            <th onclick="sortTable(this.closest('table'),1)">Confidence</th>
-          </tr></thead><tbody>`;
+        let html = `
+          <div id="preview">
+            <img src="${url}" alt="Preview"/>
+          </div>
+          <table id="conceptTable">
+            <thead><tr>
+              <th onclick="sortTable(this.closest('table'),0)">Concept</th>
+              <th onclick="sortTable(this.closest('table'),1)">Confidence</th>
+            </tr></thead><tbody>
+        `;
 
         concepts.forEach(c => {
           const confidence = (c.value * 100).toFixed(2);
@@ -186,7 +203,7 @@
           if (confidence >= 70) level = 'high';
           else if (confidence >= 40) level = 'mid';
 
-          tableHTML += `<tr>
+          html += `<tr>
             <td>${c.name}</td>
             <td>
               <div class="bar-container">
@@ -196,8 +213,9 @@
             </td>
           </tr>`;
         });
-        tableHTML += `</tbody></table>`;
-        resultsDiv.innerHTML = tableHTML;
+
+        html += `</tbody></table>`;
+        resultsDiv.innerHTML = html;
       } catch (err) {
         resultsDiv.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
       }
