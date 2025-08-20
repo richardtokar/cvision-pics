@@ -6,7 +6,8 @@ export default async function handler(req, res) {
   }
 
   // 2. Check for the Clarifai API Key in environment variables
-  const apiKey = process.env.CLARifai_API_KEY;
+  // CORRECTED: The typo in the environment variable name is fixed here.
+  const apiKey = process.env.CLARIFAI_API_KEY;
   if (!apiKey) {
     console.error('Server Error: Clarifai API key is not set.');
     return res.status(500).json({ error: 'Server configuration error.' });
