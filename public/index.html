@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>cvision.pics - Image Recognition</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 2rem; }
+    input, button { padding: 0.5rem; width: 100%; margin-top: 0.5rem; }
+    pre { background: #f4f4f4; padding: 1rem; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>cvision.pics</h1>
+  <p>Enter an image URL to analyze:</p>
+  <input id="url" placeholder="https://example.com/photo.jpg" />
+  <button onclick="send()">Recognize</button>
+  <pre id="output"></pre>
+
+  <script>
+    async function send() {
+      const imageUrl = document.getElementById('url').value;
+      const res = await fetch('/api/recognize', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ imageUrl })
+      });
+      const data = await res.json();
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
