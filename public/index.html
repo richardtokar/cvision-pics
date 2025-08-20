@@ -1,31 +1,133 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>cvision.pics - Image Recognition</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>cvision.pics – Image Recognition</title>
   <style>
-    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 2rem; }
-    input, button { padding: 0.5rem; width: 100%; margin-top: 0.5rem; }
-    pre { background: #f4f4f4; padding: 1rem; overflow-x: auto; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background: #f7f9fc;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    form {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    input[type="text"] {
+      width: 70%;
+      max-width: 400px;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      background-color: #0078d4;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+    button:hover {
+      background-color: #005a9e;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+      cursor: pointer;
+    }
+    tr:hover {
+      background-color: #fafafa;
+    }
+    @media (max-width: 600px) {
+      input[type="text"] {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+      button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
   <h1>cvision.pics</h1>
-  <p>Enter an image URL to analyze:</p>
-  <input id="url" placeholder="https://example.com/photo.jpg" />
-  <button onclick="send()">Recognize</button>
-  <pre id="output"></pre>
+  <form id="image-form">
+    <input type="text" id="image-url" placeholder="Paste an image URL…" required />
+    <button type="submit">Analyze</button>
+  </form>
+
+  <div id="results"></div>
 
   <script>
-    async function send() {
-      const imageUrl = document.getElementById('url').value;
-      const res = await fetch('/api/recognize', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ imageUrl })
+    const form = document.getElementById('image-form');
+    const resultsDiv = document.getElementById('results');
+
+    // Simple table sorter
+    function sortTable(table, col) {
+      const rows = Array.from(table.querySelectorAll('tr:nth-child(n+2)'));
+      const asc = table.asc = !table.asc;
+      rows.sort((a, b) => {
+        const v1 = parseFloat(a.cells[col].innerText) || a.cells[col].innerText;
+        const v2 = parseFloat(b.cells[col].innerText) || b.cells[col].innerText;
+        return (v1 > v2 ? 1 : v1 < v2 ? -1 : 0) * (asc ? 1 : -1);
       });
-      const data = await res.json();
-      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+      rows.forEach(row => table.appendChild(row));
     }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = document.getElementById('image-url').value.trim();
+      resultsDiv.innerHTML = `<p>Analyzing…</p>`;
+
+      try {
+        const res = await fetch('/api/recognize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageUrl: url })
+        });
+        if (!res.ok) throw new Error('Request failed');
+        const data = await res.json();
+
+        const concepts = data.outputs[0].data.concepts;
+        if (!concepts || concepts.length === 0) {
+          resultsDiv.innerHTML = `<p>No labels found for this image.</p>`;
+          return;
+        }
+
+        let tableHTML = `<table id="conceptTable">
+          <thead><tr>
+            <th onclick="sortTable(this.closest('table'),0)">Concept</th>
+            <th onclick="sortTable(this.closest('table'),1)">Confidence</th>
+          </tr></thead><tbody>`;
+        concepts.forEach(c => {
+          tableHTML += `<tr>
+            <td>${c.name}</td>
+            <td>${(c.value * 100).toFixed(2)}%</td>
+          </tr>`;
+        });
+        tableHTML += `</tbody></table>`;
+        resultsDiv.innerHTML = tableHTML;
+      } catch (err) {
+        resultsDiv.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+      }
+    });
   </script>
 </body>
 </html>
