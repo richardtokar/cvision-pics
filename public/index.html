@@ -72,6 +72,18 @@
     #results {
       width: 100%;
       max-width: 800px;
+      text-align: center;
+    }
+
+    #preview {
+      margin-bottom: 1.5rem;
+    }
+
+    #preview img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
 
     table {
@@ -189,6 +201,14 @@
           return;
         }
 
+        // Image preview
+        let previewHTML = `
+          <div id="preview">
+            <img src="${url}" alt="Analyzed Image"/>
+          </div>
+        `;
+
+        // Results table
         let tableHTML = `<table id="conceptTable">
           <thead><tr>
             <th onclick="sortTable(this.closest('table'),0)">Concept</th>
@@ -207,7 +227,8 @@
           </tr>`;
         });
         tableHTML += `</tbody></table>`;
-        resultsDiv.innerHTML = tableHTML;
+
+        resultsDiv.innerHTML = previewHTML + tableHTML;
       } catch (err) {
         resultsDiv.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
       }
