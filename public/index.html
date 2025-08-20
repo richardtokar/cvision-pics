@@ -29,7 +29,6 @@
       background: linear-gradient(135deg, var(--slate-900), var(--slate-800));
     }
     
-    /* NEW: Main content wrapper to push footer down */
     main {
       flex: 1 0 auto;
       display: flex;
@@ -38,13 +37,12 @@
       width: 100%;
     }
 
-    /* --- NEW: Header Section --- */
+    /* --- Header Section --- */
     .header {
       text-align: center;
       margin: 2rem 1rem;
     }
 
-    /* MODIFIED: Title styling */
     h1 {
       margin: 0;
       font-size: 2.5rem;
@@ -52,7 +50,6 @@
       letter-spacing: 1px;
     }
 
-    /* NEW: Tagline styling */
     .tagline {
       margin: 0.25rem 0 0 0;
       font-size: 1rem;
@@ -63,7 +60,7 @@
     /* --- Form Section --- */
     form {
       background: rgba(30, 41, 59, 0.9);
-      padding: 1rem;
+      padding: 1.5rem;
       border-radius: 1rem;
       box-shadow: 0 4px 20px rgba(0,0,0,0.4);
       display: flex;
@@ -73,11 +70,17 @@
       margin: 1rem;
       width: 90%;
       max-width: 600px;
+      align-items: center;
     }
     
-    /* MODIFIED: Input field styling */
+    .input-wrapper {
+      flex: 1 1 100%;
+      display: flex;
+      gap: 0.75rem;
+    }
+
     input[type="text"] {
-      flex: 1 1 60%;
+      flex-grow: 1;
       min-width: 200px;
       padding: 0.85rem;
       font-size: 1rem;
@@ -94,8 +97,7 @@
       box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
     }
 
-    /* MODIFIED: Button styling */
-    button {
+    button[type="submit"] {
       padding: 0.85rem 1.5rem;
       font-size: 1rem;
       font-weight: 600;
@@ -107,10 +109,38 @@
       transition: all 0.3s ease;
     }
 
-    button:hover {
+    button[type="submit"]:hover {
       background: var(--sky-500);
       transform: translateY(-2px);
       box-shadow: 0 4px 10px rgba(14, 165, 233, 0.2);
+    }
+
+    /* --- NEW: Upload Button and Divider --- */
+    .divider {
+      flex-basis: 100%;
+      text-align: center;
+      color: var(--slate-600);
+      font-size: 0.875rem;
+      margin: 0.5rem 0;
+    }
+
+    .upload-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 0.85rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      background-color: transparent;
+      color: var(--sky-400);
+      border: 1px solid var(--sky-400);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .upload-btn:hover {
+      background-color: rgba(56, 189, 248, 0.1);
+      color: var(--sky-500);
     }
 
     /* --- Results Section (Unchanged) --- */
@@ -120,79 +150,27 @@
       max-width: 800px;
       text-align: center;
     }
-
-    #preview {
-      margin-bottom: 1rem;
-    }
-
-    #preview img {
-      max-width: 100%;
-      max-height: 250px;
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      border-radius: 0.75rem;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      background: var(--slate-800);
-    }
-
-    th, td {
-      padding: 0.75rem;
-      text-align: left;
-      font-size: 0.95rem;
-    }
-
-    th {
-      background: var(--slate-700);
-      color: var(--slate-100);
-      cursor: pointer;
-      user-select: none;
-    }
-
-    tr:nth-child(even) {
-      background: #273449; /* Keeping this for variation */
-    }
-
-    tr:hover {
-      background: var(--slate-700);
-    }
-
-    .bar-container {
-      width: 100%;
-      background: var(--slate-600);
-      border-radius: 0.25rem;
-      overflow: hidden;
-      height: 1rem;
-    }
-
-    .bar {
-      height: 100%;
-    }
-
+    #preview { margin-bottom: 1rem; }
+    #preview img { max-width: 100%; max-height: 250px; border-radius: 0.75rem; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    table { width: 100%; border-collapse: collapse; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3); background: var(--slate-800); }
+    th, td { padding: 0.75rem; text-align: left; font-size: 0.95rem; }
+    th { background: var(--slate-700); color: var(--slate-100); cursor: pointer; user-select: none; }
+    tr:nth-child(even) { background: #273449; }
+    tr:hover { background: var(--slate-700); }
+    .bar-container { width: 100%; background: var(--slate-600); border-radius: 0.25rem; overflow: hidden; height: 1rem; }
+    .bar { height: 100%; }
     .high { background: #22c55e; }
     .mid { background: #f59e0b; }
     .low { background: #ef4444; }
     
-    /* --- NEW: Footer --- */
-    footer {
-        width: 100%;
-        text-align: center;
-        padding: 1.5rem 0;
-        color: var(--slate-600);
-        font-size: 0.875rem;
-    }
+    /* --- Footer --- */
+    footer { width: 100%; text-align: center; padding: 1.5rem 0; color: var(--slate-600); font-size: 0.875rem; }
 
     /* --- Responsive --- */
     @media (max-width: 768px) {
       h1 { font-size: 2rem; }
       .tagline { font-size: 0.9rem; }
-      form { flex-direction: column; align-items: stretch; }
-      input[type="text"], button { width: auto; }
+      .input-wrapper { flex-direction: column; }
     }
   </style>
 </head>
@@ -205,8 +183,13 @@
     </header>
     
     <form id="image-form">
-      <input type="text" id="image-url" placeholder="Paste an image URL to analyze…" required />
-      <button type="submit">Analyze</button>
+      <div class="input-wrapper">
+        <input type="text" id="image-url" placeholder="Paste an image URL…" />
+        <button type="submit">Analyze</button>
+      </div>
+      <div class="divider">OR</div>
+      <label for="image-upload" class="upload-btn">Upload a File</label>
+      <input type="file" id="image-upload" accept="image/*" style="display: none;">
     </form>
 
     <div id="results"></div>
@@ -217,34 +200,21 @@
   </footer>
 
   <script>
-    // YOUR JAVASCRIPT IS UNCHANGED AND REMAINS HERE
     const form = document.getElementById('image-form');
+    const imageUrlInput = document.getElementById('image-url');
+    const fileInput = document.getElementById('image-upload');
     const resultsDiv = document.getElementById('results');
 
-    // Simple table sorter
-    function sortTable(table, col) {
-      const rows = Array.from(table.querySelectorAll('tr:nth-child(n+2)'));
-      const asc = table.asc = !table.asc;
-      rows.sort((a, b) => {
-        const v1 = parseFloat(a.cells[col].innerText) || a.cells[col].innerText;
-        const v2 = parseFloat(b.cells[col].innerText) || b.cells[col].innerText;
-        return (v1 > v2 ? 1 : v1 < v2 ? -1 : 0) * (asc ? 1 : -1);
-      });
-      rows.forEach(row => table.appendChild(row));
-    }
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const url = document.getElementById('image-url').value.trim();
+    // --- REFACTORED: Core analysis logic now in a reusable function ---
+    async function analyzeImage(payload, imageSrc) {
       resultsDiv.innerHTML = `<p>Analyzing…</p>`;
-
       try {
         const res = await fetch('/api/recognize', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ imageUrl: url })
+          body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error('Request failed');
+        if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
         const data = await res.json();
 
         const concepts = data.outputs[0].data.concepts;
@@ -255,7 +225,7 @@
 
         let html = `
           <div id="preview">
-            <img src="${url}" alt="Preview"/>
+            <img src="${imageSrc}" alt="Preview"/>
           </div>
           <table id="conceptTable">
             <thead><tr>
@@ -286,7 +256,43 @@
       } catch (err) {
         resultsDiv.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
       }
+    }
+
+    // --- MODIFIED: Event listener for URL submission ---
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = imageUrlInput.value.trim();
+      if (url) {
+        analyzeImage({ imageUrl: url }, url);
+      }
     });
+
+    // --- NEW: Event listener for file upload ---
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const base64String = event.target.result;
+          // Clarifai expects only the base64 part, without the data URI prefix
+          const imageBytes = base64String.split(',')[1];
+          analyzeImage({ imageBytes: imageBytes }, base64String);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // --- UNCHANGED: Simple table sorter ---
+    function sortTable(table, col) {
+      const rows = Array.from(table.querySelectorAll('tr:nth-child(n+2)'));
+      const asc = table.asc = !table.asc;
+      rows.sort((a, b) => {
+        const v1 = parseFloat(a.cells[col].innerText) || a.cells[col].innerText;
+        const v2 = parseFloat(b.cells[col].innerText) || b.cells[col].innerText;
+        return (v1 > v2 ? 1 : v1 < v2 ? -1 : 0) * (asc ? 1 : -1);
+      });
+      rows.forEach(row => table.appendChild(row));
+    }
   </script>
 </body>
 </html>
