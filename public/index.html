@@ -4,48 +4,159 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>cvision.pics – Image Recognition</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+      <circle cx='50' cy='50' r='45' fill='black'/>
+      <circle cx='50' cy='50' r='30' fill='%2300bcd4'/>
+      <circle cx='50' cy='50' r='12' fill='white'/>
+    </svg>">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --primary: #00bcd4;
+      --secondary: #1e293b;
+      --accent: #a3e635;
+      --bg-light: #f7f9fc;
+      --bg-dark: #0f172a;
+      --text-light: #f1f5f9;
+      --text-dark: #1e293b;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      margin: 2rem;
-      background: #f7f9fc;
-      color: #333;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    h1 {
+
+    /* Subtle animated gradient background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(120deg, rgba(0,188,212,0.2), rgba(163,230,53,0.2), rgba(14,165,233,0.2));
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+      z-index: -1;
+    }
+
+    @keyframes gradientShift {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    header {
+      width: 100%;
+      padding: 1rem;
       text-align: center;
-      margin-bottom: 1rem;
+      background: var(--secondary);
+      color: var(--text-light);
+      font-weight: 600;
+      font-size: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
     }
+
+    header svg {
+      height: 32px;
+      width: 32px;
+    }
+
+    /* Dark mode toggle */
+    .toggle-container {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+    }
+    .toggle-container input {
+      display: none;
+    }
+    .toggle-container label {
+      cursor: pointer;
+      background: var(--primary);
+      border-radius: 20px;
+      padding: 0.25rem 0.75rem;
+      color: white;
+      font-size: 0.8rem;
+      user-select: none;
+    }
+
+    main {
+      width: 90%;
+      max-width: 900px;
+      margin-top: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      transition: background 0.3s, color 0.3s;
+    }
+
     form {
       text-align: center;
-      margin-bottom: 2rem;
     }
+
     input[type="text"] {
       width: 70%;
       max-width: 400px;
-      padding: 0.5rem;
+      padding: 0.75rem;
       font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 1rem;
     }
+
     button {
-      padding: 0.5rem 1rem;
+      padding: 0.75rem 1.25rem;
       font-size: 1rem;
-      background-color: #0078d4;
+      background-color: var(--primary);
       color: white;
       border: none;
+      border-radius: 8px;
       cursor: pointer;
-      margin-left: 0.5rem;
+      transition: background 0.3s ease, transform 0.2s;
     }
     button:hover {
-      background-color: #005a9e;
+      background-color: #0097a7;
+      transform: translateY(-2px);
     }
+
+    /* Drag-and-drop placeholder */
+    .drop-zone {
+      border: 2px dashed var(--primary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1rem auto;
+      width: 80%;
+      color: #666;
+      font-size: 0.9rem;
+      background: rgba(0,188,212,0.05);
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      background: white;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     th, td {
       padding: 0.75rem;
-      border-bottom: 1px solid #ddd;
       text-align: left;
     }
     th {
@@ -55,29 +166,87 @@
     tr:hover {
       background-color: #fafafa;
     }
-    @media (max-width: 600px) {
-      input[type="text"] {
-        width: 100%;
-        margin-bottom: 0.5rem;
-      }
-      button {
-        width: 100%;
-      }
+
+    /* Confidence progress bar */
+    .progress {
+      background: #e5e7eb;
+      border-radius: 6px;
+      overflow: hidden;
+      height: 20px;
+      position: relative;
+    }
+    .progress-bar {
+      height: 100%;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: white;
+      line-height: 20px;
+    }
+    .high { background: #22c55e; }   /* green */
+    .mid { background: #f59e0b; }    /* orange */
+    .low { background: #ef4444; }    /* red */
+
+    /* Dark mode */
+    body.dark {
+      background: var(--bg-dark);
+      color: var(--text-light);
+    }
+    body.dark .card {
+      background: #1e293b;
+      color: var(--text-light);
+    }
+    body.dark th {
+      background: #334155;
+      color: var(--text-light);
+    }
+    body.dark input[type="text"] {
+      background: #334155;
+      color: var(--text-light);
+      border: 1px solid #475569;
+    }
+    body.dark .drop-zone {
+      background: rgba(255,255,255,0.05);
+      color: #cbd5e1;
     }
   </style>
 </head>
 <body>
-  <h1>cvision.pics</h1>
-  <form id="image-form">
-    <input type="text" id="image-url" placeholder="Paste an image URL…" required />
-    <button type="submit">Analyze</button>
-  </form>
+  <header>
+    <!-- Inline logo SVG -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="white"/>
+      <circle cx="50" cy="50" r="30" fill="#00bcd4"/>
+      <circle cx="50" cy="50" r="12" fill="#1e293b"/>
+    </svg>
+    cvision.pics
+    <div class="toggle-container">
+      <input type="checkbox" id="darkToggle">
+      <label for="darkToggle">🌙 Dark Mode</label>
+    </div>
+  </header>
 
-  <div id="results"></div>
+  <main>
+    <div class="card">
+      <form id="image-form">
+        <input type="text" id="image-url" placeholder="Paste an image URL…" required />
+        <button type="submit">Analyze</button>
+      </form>
+      <div class="drop-zone">Or drag and drop an image here (placeholder)</div>
+    </div>
+
+    <div id="results" class="card"></div>
+  </main>
 
   <script>
     const form = document.getElementById('image-form');
     const resultsDiv = document.getElementById('results');
+    const toggle = document.getElementById('darkToggle');
+
+    // Dark mode toggle
+    toggle.addEventListener('change', () => {
+      document.body.classList.toggle('dark');
+    });
 
     // Simple table sorter
     function sortTable(table, col) {
@@ -117,9 +286,15 @@
             <th onclick="sortTable(this.closest('table'),1)">Confidence</th>
           </tr></thead><tbody>`;
         concepts.forEach(c => {
+          const val = (c.value * 100).toFixed(2);
+          let barClass = val >= 80 ? "high" : val >= 50 ? "mid" : "low";
           tableHTML += `<tr>
             <td>${c.name}</td>
-            <td>${(c.value * 100).toFixed(2)}%</td>
+            <td>
+              <div class="progress">
+                <div class="progress-bar ${barClass}" style="width:${val}%">${val}%</div>
+              </div>
+            </td>
           </tr>`;
         });
         tableHTML += `</tbody></table>`;
